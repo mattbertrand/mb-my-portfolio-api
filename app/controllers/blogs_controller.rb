@@ -3,49 +3,50 @@ class BlogsController < ApplicationController
 
   # GET /blogs
   def index
-    @blogs = Blog.all
+    blogs = Blog.all
 
-    render json: @blogs
+    render json: blogs, except: [:created_at, :updated_at, :project_id], include: [:project]
   end
 
   # GET /blogs/1
   def show
-    render json: @blog
+    render json: blog
   end
 
   # POST /blogs
   def create
-    @blog = Blog.new(blog_params)
+    blog = Blog.new(blog_params)
 
-    if @blog.save
-      render json: @blog, status: :created, location: @blog
+    if blog.save
+      render json: blog, status: :created, location: blog, except: [:created_at, :updated_at, :project_id], include: [:project]
     else
-      render json: @blog.errors, status: :unprocessable_entity
+      render json: blog.errors, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /blogs/1
   def update
-    if @blog.update(blog_params)
-      render json: @blog
+    if blog.update(blog_params)
+      render json: blog
     else
-      render json: @blog.errors, status: :unprocessable_entity
+      render json: blog.errors, status: :unprocessable_entity
     end
   end
 
   # DELETE /blogs/1
   def destroy
-    @blog.destroy
+    blog.destroy
+    render json: blog
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_blog
-      @blog = Blog.find(params[:id])
+      blog = Blog.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def blog_params
-      params.require(:blog).permit(:content)
+      params.require(:blog).permit(:content, :project_id)
     end
 end

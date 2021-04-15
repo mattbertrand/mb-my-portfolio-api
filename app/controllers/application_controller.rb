@@ -14,7 +14,7 @@ class ApplicationController < ActionController::API
         @current_user ||= User.find(session[:user_id]) if session[:user_id]
     end
 
-    def logout
+    def logout!
         session.clear
     end
 end
